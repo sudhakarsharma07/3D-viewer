@@ -9,6 +9,7 @@ export default function Viewer() {
   const [states, setStates] = useState([]);
   const [activeInitialState, setActiveInitialState] = useState(null);
   const [label, setLabel] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const controlsApiRef = useRef(null);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function Viewer() {
   useEffect(() => {
     if (selected) {
       loadStates(selected._id);
-      setActiveInitialState(null); // default view unless a saved state is loaded
+      setActiveInitialState(null);
     }
   }, [selected]);
 
@@ -65,9 +66,26 @@ export default function Viewer() {
     loadStates(selected._id);
   }
 
+  async function deleteObject(e, objectId) {
+    e.stopPropagation();
+    const confirmed = window.confirm("Delete this object and all its saved views?");
+    if (!confirmed) return;
+
+    await api.delete(`/objects/${objectId}`);
+    setObjects((prev) => {
+      const remaining = prev.filter((o) => o._id !== objectId);
+      if (selected?._id === objectId) {
+        setSelected(remaining[0] || null);
+        setStates([]);
+        setActiveInitialState(null);
+      }
+      return remaining;
+    });
+  }
+
   return (
     <div className="viewer-layout">
-      <div className="sidebar">
+      <div className={`sidebar ${sidebarOpen ? "" : "collapsed"}`}>
         <UploadForm onUploaded={handleUploaded} />
 
         <h3>Your objects</h3>
@@ -78,7 +96,10 @@ export default function Viewer() {
             className={`object-item ${selected?._id === obj._id ? "active" : ""}`}
             onClick={() => setSelected(obj)}
           >
-            {obj.originalName}
+            <span>{obj.originalName}</span>
+            <button className="icon-btn" onClick={(e) => deleteObject(e, obj._id)} title="Delete object">
+              Del
+            </button>
           </div>
         ))}
 
@@ -87,18 +108,10 @@ export default function Viewer() {
             <h3 style={{ marginTop: 24 }}>Saved views</h3>
             <input
               type="text"
+              className="view-label-input"
               placeholder="View label (optional)"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              style={{
-                width: "100%",
-                marginBottom: 8,
-                padding: 6,
-                borderRadius: 4,
-                border: "1px solid #2e323d",
-                background: "#0f1115",
-                color: "#e8e8ea",
-              }}
             />
             <button className="primary-btn" onClick={saveCurrentView}>
               Save current view
@@ -108,9 +121,9 @@ export default function Viewer() {
               {states.map((s) => (
                 <div key={s._id} className="state-row">
                   <span>{s.label}</span>
-                  <div>
-                    <button onClick={() => loadSavedView(s)}>Load</button>{" "}
-                    <button onClick={() => deleteState(s._id)}>Del</button>
+                  <div className="state-row-actions">
+                    <button className="icon-btn" onClick={() => loadSavedView(s)}>Load</button>
+                    <button className="icon-btn" onClick={() => deleteState(s._id)}>Del</button>
                   </div>
                 </div>
               ))}
@@ -120,6 +133,14 @@ export default function Viewer() {
       </div>
 
       <div className="canvas-wrap">
+        <button
+          className="menu-toggle"
+          style={{ position: "absolute", top: 10, right: 10, zIndex: 3 }}
+          onClick={() => setSidebarOpen((v) => !v)}
+        >
+          {sidebarOpen ? "Hide panel" : "Show panel"}
+        </button>
+
         {selected ? (
           <ThreeViewer
             key={selected._id + (activeInitialState ? JSON.stringify(activeInitialState) : "")}
@@ -129,7 +150,7 @@ export default function Viewer() {
             onControlsRef={(api) => (controlsApiRef.current = api)}
           />
         ) : (
-          <div style={{ padding: 24 }}>Upload a 3D object to get started.</div>
+          <div className="empty-canvas-msg">Upload a 3D object to get started.</div>
         )}
       </div>
     </div>

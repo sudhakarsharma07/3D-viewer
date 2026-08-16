@@ -1,8 +1,10 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const multer = require("multer");
 const crypto = require("crypto");
 const Object3D = require("../models/Object3D");
+const InteractionState = require("../models/InteractionState");
 const requireAuth = require("../middleware/auth");
 
 const router = express.Router();
@@ -66,10 +68,25 @@ router.get("/", requireAuth, async (req, res) => {
 
 // DELETE /api/objects/:id
 router.delete("/:id", requireAuth, async (req, res) => {
-  const object = await Object3D.findOne({ _id: req.params.id, owner: req.userId });
-  if (!object) return res.status(404).json({ message: "Object not found" });
-  await object.deleteOne();
-  res.json({ message: "Deleted" });
+  try {
+    const object = await Object3D.findOne({ _id: req.params.id, owner: req.userId });
+    if (!object) return res.status(404).json({ message: "Object not found" });
+
+    // remove the file from disk (best-effort — don't fail the request if it's already gone)
+    const filePath = path.join(__dirname, "..", "uploads", object.fileName);
+    fs.unlink(filePath, (err) => {
+      if (err && err.code !== "ENOENT") console.error("File delete error:", err.message);
+    });
+
+    // remove any saved camera views tied to this object so they don't become orphaned
+    await InteractionState.deleteMany({ object: object._id, owner: req.userId });
+
+    await object.deleteOne();
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    console.error("Delete object error:", err.message);
+    res.status(500).json({ message: "Server error during delete" });
+  }
 });
 
 module.exports = router;
