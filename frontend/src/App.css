@@ -1,0 +1,168 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #0f1115;
+  color: #e8e8ea;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: #171a21;
+  border-bottom: 1px solid #262a34;
+}
+
+.navbar a,
+.navbar button {
+  color: #e8e8ea;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.brand {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.auth-card {
+  max-width: 380px;
+  margin: 60px auto;
+  padding: 28px;
+  background: #171a21;
+  border-radius: 10px;
+  border: 1px solid #262a34;
+}
+
+.auth-card h2 {
+  margin-top: 0;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #2e323d;
+  background: #0f1115;
+  color: #e8e8ea;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: #4f7cff;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.viewer-layout {
+  display: flex;
+  height: calc(100vh - 57px);
+}
+
+.sidebar {
+  width: 300px;
+  padding: 18px;
+  background: #171a21;
+  border-right: 1px solid #262a34;
+  overflow-y: auto;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #8a8f9c;
+}
+
+.object-item {
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.object-item:hover,
+.object-item.active {
+  background: #262a34;
+}
+
+.canvas-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.state-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 6px 8px;
+  background: #0f1115;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.state-row button {
+  background: #2e323d;
+  border: none;
+  color: #e8e8ea;
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.upload-box {
+  border: 1px dashed #2e323d;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.upload-box input {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.primary-btn {
+  background: #4f7cff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.hint {
+  color: #8a8f9c;
+  font-size: 12px;
+}
