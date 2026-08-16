@@ -5,7 +5,7 @@ Full-stack web application to upload, visualize, and manipulate 3D objects
 states. Built as part of a technical assignment (MERN + Three.js + AWS).
 
 **Live demo:** https://3-d-viewer-kohl.vercel.app
-**Backend API:** https://threed-viewer-od2i.onrender.com
+
 
 ---
 
