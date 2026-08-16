@@ -14,6 +14,11 @@ const stateRoutes = require("./routes/states");
 
 const app = express();
 
+// Behind Render's reverse proxy, req.protocol would otherwise report "http"
+// even though the original request was https — this makes req.protocol,
+// req.secure, etc. reflect the real (forwarded) protocol.
+app.set("trust proxy", 1);
+
 // Ensure the uploads directory exists (fresh deploys won't have it, since
 // it's gitignored and empty dirs aren't tracked by git).
 const uploadsDir = path.join(__dirname, "uploads");
