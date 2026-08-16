@@ -6,11 +6,20 @@ const helmet = require("helmet");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 
+const fs = require("fs");
+
 const authRoutes = require("./routes/auth");
 const objectRoutes = require("./routes/objects");
 const stateRoutes = require("./routes/states");
 
 const app = express();
+
+// Ensure the uploads directory exists (fresh deploys won't have it, since
+// it's gitignored and empty dirs aren't tracked by git).
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // --- Security & core middleware ---
 app.use(helmet({ crossOriginResourcePolicy: false })); // allow serving /uploads cross-origin
